@@ -147,12 +147,13 @@ void Host::readData(){
 	}
 	
 	if (code == "0110"){
+		idTran++;
 		QString money = dataIn.split(":")[2];
 		QString number = dataIn.split(":")[3];
 		QString name = dataIn.split(":")[4];
 		QString date = dataIn.split(":")[5];
 		QString cvv = dataIn.split(":")[6];
-		if (!money.isEmpty()){
+		if (!money.isEmpty() && money.toInt() > 1){
 			for (int i = 0; i < vectorCards.size(); i++)
 				if (vectorCards[i]->number == number){
 					if (vectorCards[i]->cardHolderName == name 
@@ -161,7 +162,6 @@ void Host::readData(){
 						if (money.toDouble() <= balances[i]){
 							dataOut = "0120";
 							balances[i] -= money.toDouble();
-							idTran++;
 							allTran.push_back(myTransaction{idTran, number, money});
 						}
 						else {
@@ -191,6 +191,36 @@ void Host::readData(){
 		if (sumUp == dataIn.split(":")[2])
 			dataOut = "0540";
 		else dataOut = "0127";
+	}
+	
+	if (code == "0710"){
+		QString toReturn = "";
+		for (int i = 0; i < allTran.size(); i++)
+			if (allTran[i].card == dataIn.split(":")[2])
+				toReturn += " id - " + QString::number(allTran[i].idTran) + " "
+							+ allTran[i].amountTran + "$" + "\n";
+		if (toReturn.isEmpty())
+			dataOut = "0740"; // no ids for this card
+		else dataOut = "0720:" + toReturn; // everything is ok		
+	}
+	if (code == "0610"){
+		bool found = false;
+		for (int i = 0; i < allTran.size(); i++){
+			if (allTran[i].idTran == dataIn.split(":")[2]){
+				for (int j = 0; j < vectorCards.size(); j++)
+					if (vectorCards[j]->getNumber() == allTran[i].card){
+						balances[j] += allTran[i].amountTran.toInt();
+						found = true;
+						dataOut = "0620:" + QString::number(allTran[i].idTran); // OK refund
+						allTran.remove(i);
+						break;
+					}
+			}
+			if (found)
+				break;
+		}
+		if (!found)
+			dataOut = "0650"; // something gone wrong (can't be truth)
 	}
 		
 	QByteArray block;
