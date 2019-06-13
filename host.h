@@ -1,11 +1,11 @@
 #ifndef HOST_H
 #define HOST_H
 
-#include "C:\Users\podus\Documents\Qt\Point of Sale Project\point_of_sale\card.h"
+#include "card.h"
 
 #include <QWidget>
 #include <QTcpServer>
-#include <QtcpSocket>
+#include <QTcpSocket>
 #include <QNetworkConfiguration>
 #include <QNetworkSession>
 #include <QtNetwork>

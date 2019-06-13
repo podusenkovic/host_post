@@ -44,7 +44,7 @@ Host::Host(QWidget *parent) :
 	ui->labelForData->setText("");
 	//---------------------------------------------
 	//--TODO: READ DATABASE WITH CARDS FROM FILE---
-	QFile database("C:\\Users\\podus\\Documents\\Qt\\Point of Sale Project\\host_post\\database.txt");
+    QFile database("../host_post/database.txt");
 	database.open(QIODevice::ReadOnly | QIODevice::Text);
 	
 	QTextStream in(&database);

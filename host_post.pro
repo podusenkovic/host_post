@@ -25,10 +25,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-    host.cpp
+    host.cpp \
+    card.cpp
 
 HEADERS += \
-    host.h
+    host.h \
+    card.h
 
 FORMS += \
-    host.ui
+    host.ui \
+    card.ui
